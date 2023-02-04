@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TinkoffFintech</string>
+    <string name="genreYear">"%1$s (%2$s)"</string>
+    <string name="genre">"Жанры: "</string>
+    <string name="countries">"Страны: "</string>
+    <string name="notFound">"Не найдено"</string>
+    <string name="networkError">"Произошла ошибка при загрузке данных, проверьте подключение к сети"</string>
+    <string name="retry">"Повторить"</string>
 </resources>

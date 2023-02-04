@@ -9,5 +9,14 @@
         android:id="@+id/popularsFragment"
         android:name="ru.lzanelzaz.tinkofffintech.popular.PopularsFragment"
         android:label="fragment_populars"
-        tools:layout="@layout/fragment_populars" />
+        tools:layout="@layout/fragment_populars">
+        <action
+            android:id="@+id/action_popularsFragment_to_filmCardFragment"
+            app:destination="@id/filmCardFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/filmCardFragment"
+        android:name="ru.lzanelzaz.tinkofffintech.filmcard.FilmCardFragment"
+        android:label="fragment_film_card"
+        tools:layout="@layout/fragment_film_card" />
 </navigation>

@@ -9,5 +9,5 @@ class AppRepository @Inject constructor(
     private val apiService: ApiService
 ) {
     suspend fun getPopular() = apiService.getPopular()
-
+    suspend fun getDescription(id: String) = apiService.getDescription(id)
 }
