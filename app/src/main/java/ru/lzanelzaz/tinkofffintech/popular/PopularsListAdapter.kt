@@ -1,8 +1,6 @@
 package ru.lzanelzaz.tinkofffintech.popular
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +9,14 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.ImageLoader
 import coil.load
-import coil.request.ImageRequest
 import java.io.File
 import ru.lzanelzaz.tinkofffintech.R
 import ru.lzanelzaz.tinkofffintech.RecyclerClickListener
 import ru.lzanelzaz.tinkofffintech.databinding.FilmItemBinding
 import ru.lzanelzaz.tinkofffintech.filmcard.FilmCardFragment
 import ru.lzanelzaz.tinkofffintech.model.Film
+import ru.lzanelzaz.tinkofffintech.saveImage
 
 
 class PopularsListAdapter :
@@ -45,10 +42,10 @@ class PopularsListAdapter :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Film, listener: RecyclerClickListener) {
             with(binding) {
-                itemName.text = item.nameRu
                 itemPoster.load(
                     item.posterUrl.toUri().buildUpon().scheme("https").build()
                 )
+                itemName.text = item.nameRu
                 itemGenreYear.text = context.getString(
                     R.string.genreYear,
                     item.genres[0].genre.replaceFirstChar { it.uppercase() },
@@ -65,23 +62,19 @@ class PopularsListAdapter :
                 card.setOnLongClickListener {
                     val isFavourite = star.visibility == View.VISIBLE
                     if (isFavourite) {
-                        File(context.filesDir, "${item.filmId}.jpeg").delete()
+                        File(
+                            context.filesDir,
+                            context.resources.getString(R.string.fileName, item.filmId)
+                        ).delete()
                         listener.onItemRemoveClick(item.filmId)
                         star.visibility = View.INVISIBLE
                     } else {
-                        val uri = "${item.filmId}.jpeg"
-                        val req = ImageRequest.Builder(context)
-                            .data(
-                                item.posterUrl.toUri().buildUpon().scheme("https").build()
-                            )
-                            .target { result ->
-                                val outputStream = File(context.filesDir, uri).outputStream()
-                                (result as BitmapDrawable).bitmap
-                                    .compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                                outputStream.close()
-                            }.build()
-                        ImageLoader(context).enqueue(req)
-                        listener.onItemClick(item.filmId, uri)
+                        saveImage(
+                            context.resources.getString(R.string.fileName, item.filmId),
+                            item.posterUrl,
+                            context
+                        )
+                        listener.onItemClick(item.filmId)
                         star.visibility = View.VISIBLE
                     }
                     true

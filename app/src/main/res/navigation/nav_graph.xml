@@ -9,7 +9,7 @@
         android:id="@+id/popularsFragment"
         android:name="ru.lzanelzaz.tinkofffintech.popular.PopularsFragment"
         android:label="fragment_populars"
-        tools:layout="@layout/fragment_populars">
+        tools:layout="@layout/fragment_screen">
         <action
             android:id="@+id/action_popularsFragment_to_filmCardFragment"
             app:destination="@id/filmCardFragment" />
@@ -26,7 +26,7 @@
         android:id="@+id/favouritesFragment"
         android:name="ru.lzanelzaz.tinkofffintech.favourites.FavouritesFragment"
         android:label="FavouritesFragment"
-        tools:layout="@layout/fragment_favourites">
+        tools:layout="@layout/fragment_screen">
         <action
             android:id="@+id/action_favouritesFragment_to_popularsFragment"
             app:destination="@id/popularsFragment" />

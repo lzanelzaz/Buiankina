@@ -10,27 +10,26 @@ import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.lzanelzaz.tinkofffintech.R
 import ru.lzanelzaz.tinkofffintech.RecyclerClickListener
-import ru.lzanelzaz.tinkofffintech.databinding.FragmentFavouritesBinding
+import ru.lzanelzaz.tinkofffintech.databinding.FragmentScreenBinding
 
 typealias Loaded = FavouritesViewModel.State.Loaded
-typealias Loading = FavouritesViewModel.State.Loading
-typealias Error = FavouritesViewModel.State.Error
 
 @AndroidEntryPoint
 class FavouritesFragment : Fragment() {
     private val viewModel: FavouritesViewModel by viewModels()
-    private lateinit var binding: FragmentFavouritesBinding
+    private lateinit var binding: FragmentScreenBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFavouritesBinding.inflate(inflater, container, false)
+        binding = FragmentScreenBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.topAppBar.title = resources.getString(R.string.favourites)
         bindToViewModel()
     }
 
@@ -46,8 +45,8 @@ class FavouritesFragment : Fragment() {
                 emptyList()
             adapter.submitList(dataset)
             adapter.setItemListener(object : RecyclerClickListener {
-                override fun onItemClick(filmId: Int, uri: String) {
-                    viewModel.onItemClicked(filmId, uri)
+                override fun onItemClick(filmId: Int) {
+                    viewModel.onItemClicked(filmId)
                 }
 
                 override fun onItemRemoveClick(filmId: Int) {

@@ -11,18 +11,18 @@ import androidx.fragment.app.viewModels
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import ru.lzanelzaz.tinkofffintech.R
 import ru.lzanelzaz.tinkofffintech.databinding.FragmentFilmCardBinding
 import ru.lzanelzaz.tinkofffintech.model.Description
 
 typealias Loaded = FilmCardViewModel.State.Loaded
-typealias LoadedFromDb = FilmCardViewModel.State.LoadedFromDb
 typealias Loading = FilmCardViewModel.State.Loading
 typealias Error = FilmCardViewModel.State.Error
 
 @AndroidEntryPoint
 class FilmCardFragment : Fragment() {
     private val viewModel: FilmCardViewModel by viewModels()
-    lateinit var binding: FragmentFilmCardBinding
+    private lateinit var binding: FragmentFilmCardBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -40,14 +40,13 @@ class FilmCardFragment : Fragment() {
         viewModel.filmId = requireNotNull(requireArguments().getInt(FILM_ID))
         viewModel.state.observe(viewLifecycleOwner) { state ->
             val description: Description? =
-                when (state) {
-                    is Loaded -> state.description
-                    is LoadedFromDb -> state.description
-                    else -> null
-                }
+                if (state is Loaded)
+                    state.description
+                else
+                    null
             if (description != null) {
                 with(binding) {
-                    if (state is Loaded) {
+                    if (!(state as Loaded).isDb) {
                         descriptionPoster.load(
                             description.posterUrl.toUri().buildUpon().scheme("https").build()
                         )
@@ -55,19 +54,22 @@ class FilmCardFragment : Fragment() {
                         descriptionPoster.setImageURI(
                             File(
                                 requireContext().filesDir,
-                                description.posterDrawable
+                                requireContext().resources.getString(
+                                    R.string.fileName,
+                                    description.kinopoiskId
+                                )
                             ).toUri()
                         )
                     }
                     descriptionStory.text = description.description
                     descriptionName.text = description.nameRu
-                    var genres: String = ""
+                    var genres = ""
                     description.genres.forEachIndexed { index, it ->
                         if (index != 0) genres += ", "
                         genres += it.genre
                     }
                     descriptionGenres.text = genres
-                    var countries: String = ""
+                    var countries = ""
                     description.countries.forEachIndexed { index, it ->
                         if (index != 0) countries += ", "
                         countries += it.country
@@ -76,16 +78,17 @@ class FilmCardFragment : Fragment() {
                 }
             }
 
-            if (state is Loaded || state is LoadedFromDb) binding.genres.visibility =
+            if (state is Loaded) binding.genres.visibility =
                 View.VISIBLE else View.GONE
-            if (state is Loaded || state is LoadedFromDb) binding.countries.visibility =
+            if (state is Loaded) binding.countries.visibility =
                 View.VISIBLE else View.GONE
 
             with(binding.stateViewLayout) {
                 // Error/ loading view
-                stateView.visibility = if (state !is Error) View.GONE else View.VISIBLE
+                stateView.visibility =
+                    if (state is Loaded) View.GONE else View.VISIBLE
                 val imageRes =
-                    if (state is Loading) ru.lzanelzaz.tinkofffintech.R.drawable.loading_animation else ru.lzanelzaz.tinkofffintech.R.drawable.network
+                    if (state is Loading) R.drawable.loading_animation else R.drawable.network
                 statusImageView.setImageResource(imageRes)
 
                 errorTextView.visibility = if (state is Error) View.VISIBLE else View.GONE

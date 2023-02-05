@@ -1,8 +1,6 @@
 package ru.lzanelzaz.tinkofffintech.favourites
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +9,13 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.ImageLoader
-import coil.request.ImageRequest
 import java.io.File
 import ru.lzanelzaz.tinkofffintech.R
 import ru.lzanelzaz.tinkofffintech.RecyclerClickListener
 import ru.lzanelzaz.tinkofffintech.databinding.FilmItemBinding
 import ru.lzanelzaz.tinkofffintech.filmcard.FilmCardFragment
 import ru.lzanelzaz.tinkofffintech.model.Description
+import ru.lzanelzaz.tinkofffintech.saveImage
 
 class FavouritesListAdapter :
     ListAdapter<Description, FavouritesListAdapter.ItemViewHolder>(DiffCallback()) {
@@ -44,7 +41,12 @@ class FavouritesListAdapter :
         fun bind(item: Description, listener: RecyclerClickListener) {
             with(binding) {
                 itemName.text = item.nameRu
-                itemPoster.setImageURI(File(context.filesDir, item.posterDrawable).toUri())
+                itemPoster.setImageURI(
+                    File(
+                        context.filesDir,
+                        context.resources.getString(R.string.fileName, item.kinopoiskId)
+                    ).toUri()
+                )
                 itemGenreYear.text = context.getString(
                     R.string.genreYear,
                     item.genres[0].genre.replaceFirstChar { it.uppercase() },
@@ -60,24 +62,20 @@ class FavouritesListAdapter :
 
                 card.setOnLongClickListener {
                     if (item.isFavourite) {
-                        File(context.filesDir, "${item.kinopoiskId}.jpeg").delete()
+                        File(
+                            context.filesDir,
+                            context.resources.getString(R.string.fileName, item.kinopoiskId)
+                        ).delete()
                         listener.onItemRemoveClick(item.kinopoiskId)
                         star.visibility = View.INVISIBLE
                         item.isFavourite = false
                     } else {
-                        val uri = "${item.kinopoiskId}.jpeg"
-                        val req = ImageRequest.Builder(context)
-                            .data(
-                                item.posterUrl.toUri().buildUpon().scheme("https").build()
-                            )
-                            .target { result ->
-                                val outputStream = File(context.filesDir, uri).outputStream()
-                                (result as BitmapDrawable).bitmap
-                                    .compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                                outputStream.close()
-                            }.build()
-                        ImageLoader(context).enqueue(req)
-                        listener.onItemClick(item.kinopoiskId, uri)
+                        saveImage(
+                            context.resources.getString(R.string.fileName, item.kinopoiskId),
+                            item.posterUrl,
+                            context
+                        )
+                        listener.onItemClick(item.kinopoiskId)
                         star.visibility = View.VISIBLE
                         item.isFavourite = true
                     }

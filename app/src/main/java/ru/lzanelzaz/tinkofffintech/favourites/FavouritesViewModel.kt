@@ -30,11 +30,10 @@ class FavouritesViewModel @Inject constructor(private val appRepository: AppRepo
         }
     }
 
-    fun onItemClicked(filmId: Int, uri: String) {
+    fun onItemClicked(filmId: Int) {
         viewModelScope.launch {
             try {
                 val description = appRepository.getDescription(filmId)
-                description.posterDrawable = uri
                 description.isFavourite = true
                 appRepository.insertFavourite(description)
             } catch (exception: Exception) {

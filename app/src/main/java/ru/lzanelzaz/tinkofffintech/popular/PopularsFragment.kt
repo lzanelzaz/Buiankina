@@ -10,7 +10,7 @@ import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.lzanelzaz.tinkofffintech.R
 import ru.lzanelzaz.tinkofffintech.RecyclerClickListener
-import ru.lzanelzaz.tinkofffintech.databinding.FragmentPopularsBinding
+import ru.lzanelzaz.tinkofffintech.databinding.FragmentScreenBinding
 
 typealias Loaded = PopularsViewModel.State.Loaded
 typealias Loading = PopularsViewModel.State.Loading
@@ -19,35 +19,35 @@ typealias Error = PopularsViewModel.State.Error
 @AndroidEntryPoint
 class PopularsFragment : Fragment() {
     private val viewModel: PopularsViewModel by viewModels()
-    private lateinit var binding: FragmentPopularsBinding
+    private lateinit var binding: FragmentScreenBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPopularsBinding.inflate(inflater, container, false)
+        binding = FragmentScreenBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.topAppBar.title = resources.getString(R.string.populars)
         bindToViewModel()
     }
 
     private fun bindToViewModel() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.recyclerView.visibility =
-                if (state is PopularsViewModel.State.Loaded) View.VISIBLE else View.INVISIBLE
-
+                if (state is Loaded) View.VISIBLE else View.INVISIBLE
             val adapter = PopularsListAdapter()
-            val dataset = if (state is PopularsViewModel.State.Loaded)
+            val dataset = if (state is Loaded)
                 state.films
             else
                 emptyList()
             adapter.submitList(dataset)
             adapter.setItemListener(object : RecyclerClickListener {
-                override fun onItemClick(filmId: Int, uri: String) {
-                    viewModel.onItemClicked(filmId, uri)
+                override fun onItemClick(filmId: Int) {
+                    viewModel.onItemClicked(filmId)
                 }
 
                 override fun onItemRemoveClick(filmId: Int) {
@@ -71,12 +71,12 @@ class PopularsFragment : Fragment() {
                     if (state is Error) View.VISIBLE else View.GONE
 
                 retryButton.setOnClickListener { viewModel.onRetryButtonPressed() }
-
-                binding.bottomNavigation.favouritesButton.setOnClickListener {
-                    it.findNavController()
-                        .navigate(R.id.action_popularsFragment_to_favouritesFragment)
-                }
             }
+            binding.bottomNavigation.favouritesButton.setOnClickListener {
+                it.findNavController()
+                    .navigate(R.id.action_popularsFragment_to_favouritesFragment)
+            }
+
         }
     }
 }

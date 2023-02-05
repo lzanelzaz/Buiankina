@@ -2,5 +2,5 @@ package ru.lzanelzaz.tinkofffintech
 
 interface RecyclerClickListener {
     fun onItemRemoveClick(filmId: Int)
-    fun onItemClick(filmId: Int, uri: String)
+    fun onItemClick(filmId: Int)
 }
