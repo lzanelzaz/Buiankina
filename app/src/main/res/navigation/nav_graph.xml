@@ -13,10 +13,25 @@
         <action
             android:id="@+id/action_popularsFragment_to_filmCardFragment"
             app:destination="@id/filmCardFragment" />
+        <action
+            android:id="@+id/action_popularsFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
     </fragment>
     <fragment
         android:id="@+id/filmCardFragment"
         android:name="ru.lzanelzaz.tinkofffintech.filmcard.FilmCardFragment"
         android:label="fragment_film_card"
         tools:layout="@layout/fragment_film_card" />
+    <fragment
+        android:id="@+id/favouritesFragment"
+        android:name="ru.lzanelzaz.tinkofffintech.favourites.FavouritesFragment"
+        android:label="FavouritesFragment"
+        tools:layout="@layout/fragment_favourites">
+        <action
+            android:id="@+id/action_favouritesFragment_to_popularsFragment"
+            app:destination="@id/popularsFragment" />
+        <action
+            android:id="@+id/action_favouritesFragment_to_filmCardFragment"
+            app:destination="@id/filmCardFragment" />
+    </fragment>
 </navigation>

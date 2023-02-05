@@ -1,4 +1,4 @@
-package ru.lzanelzaz.tinkofffintech.popular
+package ru.lzanelzaz.tinkofffintech.favourites
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -14,10 +14,10 @@ import ru.lzanelzaz.tinkofffintech.R
 import ru.lzanelzaz.tinkofffintech.RecyclerClickListener
 import ru.lzanelzaz.tinkofffintech.databinding.FilmItemBinding
 import ru.lzanelzaz.tinkofffintech.filmcard.FilmCardFragment
-import ru.lzanelzaz.tinkofffintech.model.Film
+import ru.lzanelzaz.tinkofffintech.model.Description
 
-class PopularsListAdapter :
-    ListAdapter<Film, PopularsListAdapter.ItemViewHolder>(DiffCallback()) {
+class FavouritesListAdapter :
+    ListAdapter<Description, FavouritesListAdapter.ItemViewHolder>(DiffCallback()) {
 
     private lateinit var listener: RecyclerClickListener
     fun setItemListener(listener: RecyclerClickListener) {
@@ -37,33 +37,35 @@ class PopularsListAdapter :
 
     class ItemViewHolder(private val binding: FilmItemBinding, private val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Film, listener: RecyclerClickListener) {
+        fun bind(item: Description, listener: RecyclerClickListener) {
             with(binding) {
                 itemName.text = item.nameRu
                 itemPoster.load(
-                    item.posterUrlPreview.toUri().buildUpon().scheme("https").build()
+                    item.posterUrl.toUri().buildUpon().scheme("https").build()
                 )
+                //itemPoster.setImageDrawable(item.posterDrawable)
                 itemGenreYear.text = context.getString(
                     R.string.genreYear,
                     item.genres[0].genre.replaceFirstChar { it.uppercase() },
                     item.year
                 )
-                star.visibility = if (item.isFavourite) View.VISIBLE else View.INVISIBLE
-
                 card.setOnClickListener { view ->
                     view.findNavController().navigate(
-                        R.id.action_popularsFragment_to_filmCardFragment,
-                        FilmCardFragment.createArguments(filmId = item.filmId)
+                        R.id.action_favouritesFragment_to_filmCardFragment,
+                        FilmCardFragment.createArguments(filmId = item.kinopoiskId)
                     )
                 }
+                star.visibility = View.VISIBLE
+
                 card.setOnLongClickListener {
-                    val isFavourite = star.visibility == View.VISIBLE
-                    if (isFavourite) {
-                        listener.onItemRemoveClick(item.filmId)
+                    if (item.isFavourite) {
+                        listener.onItemRemoveClick(item.kinopoiskId)
                         star.visibility = View.INVISIBLE
+                        item.isFavourite = false
                     } else {
-                        listener.onItemClick(item.filmId, itemPoster.drawable)
+                        listener.onItemClick(item.kinopoiskId, itemPoster.drawable)
                         star.visibility = View.VISIBLE
+                        item.isFavourite = true
                     }
                     true
                 }
@@ -71,12 +73,12 @@ class PopularsListAdapter :
         }
     }
 
-    class DiffCallback : DiffUtil.ItemCallback<Film>() {
-        override fun areItemsTheSame(oldItem: Film, newItem: Film): Boolean {
-            return oldItem.nameRu == newItem.nameRu
+    class DiffCallback : DiffUtil.ItemCallback<Description>() {
+        override fun areItemsTheSame(oldItem: Description, newItem: Description): Boolean {
+            return oldItem.kinopoiskId == newItem.kinopoiskId
         }
 
-        override fun areContentsTheSame(oldItem: Film, newItem: Film): Boolean {
+        override fun areContentsTheSame(oldItem: Description, newItem: Description): Boolean {
             return oldItem == newItem
         }
     }

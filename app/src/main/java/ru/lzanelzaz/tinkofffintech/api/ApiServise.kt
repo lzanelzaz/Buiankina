@@ -16,5 +16,5 @@ interface ApiService {
 
     @Headers("X-API-KEY: ${BuildConfig.API_KEY}")
     @GET("api/v2.2/films/{id}")
-    suspend fun getDescription(@Path("id") id: String): Description
+    suspend fun getDescription(@Path("id") id: Int): Description
 }

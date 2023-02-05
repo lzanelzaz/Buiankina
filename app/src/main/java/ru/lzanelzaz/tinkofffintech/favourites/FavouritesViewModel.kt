@@ -1,7 +1,6 @@
-package ru.lzanelzaz.tinkofffintech.popular
+package ru.lzanelzaz.tinkofffintech.favourites
 
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,19 +9,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import ru.lzanelzaz.tinkofffintech.AppRepository
-import ru.lzanelzaz.tinkofffintech.model.Film
+import ru.lzanelzaz.tinkofffintech.model.Description
 
 @HiltViewModel
-class PopularsViewModel @Inject constructor(private val appRepository: AppRepository) :
+class FavouritesViewModel @Inject constructor(private val appRepository: AppRepository) :
     ViewModel() {
     private val _state = MutableLiveData<State>()
     val state: LiveData<State> = _state
 
     init {
-        loadState()
-    }
-
-    fun onRetryButtonPressed() {
         loadState()
     }
 
@@ -45,7 +40,6 @@ class PopularsViewModel @Inject constructor(private val appRepository: AppReposi
                 appRepository.insertFavourite(description)
             } catch (exception: Exception) {
                 _state.value = State.Error
-                Log.i("ldfhj", exception.toString())
             }
         }
     }
@@ -54,13 +48,7 @@ class PopularsViewModel @Inject constructor(private val appRepository: AppReposi
         viewModelScope.launch {
             _state.value = State.Loading
             try {
-                val films = appRepository.getPopular().films
-                val favourites = appRepository.getFavourites()
-                val intersect =
-                    films.map { it.filmId }.intersect(favourites.map { it.kinopoiskId }.toSet())
-                films.forEach { film ->
-                    if (intersect.contains(film.filmId)) film.isFavourite = true
-                }
+                val films = appRepository.getFavourites()
                 _state.value = State.Loaded(films)
             } catch (exception: Exception) {
                 _state.value = State.Error
@@ -70,7 +58,7 @@ class PopularsViewModel @Inject constructor(private val appRepository: AppReposi
 
     sealed interface State {
         object Loading : State
-        data class Loaded(val films: List<Film>) : State
+        data class Loaded(val films: List<Description>) : State
         object Error : State
     }
 }

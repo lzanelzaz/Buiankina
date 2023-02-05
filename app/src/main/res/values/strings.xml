@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">TinkoffFintech</string>
     <string name="genreYear">"%1$s (%2$s)"</string>
+
+    <string name="populars">"Популярные"</string>
+    <string name="favourites">"Избранное"</string>
+    <string name="search">"Искать"</string>
+
     <string name="genre">"Жанры: "</string>
     <string name="countries">"Страны: "</string>
     <string name="notFound">"Не найдено"</string>

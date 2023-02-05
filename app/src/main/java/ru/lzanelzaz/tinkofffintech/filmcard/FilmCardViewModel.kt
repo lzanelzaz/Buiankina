@@ -16,7 +16,7 @@ class FilmCardViewModel @Inject constructor(private val appRepository: AppReposi
     private val _state = MutableLiveData<State>()
     val state: LiveData<State> = _state
 
-    var filmId: String = ""
+    var filmId: Int = 0
         set(value) {
             field = value
             loadState()

@@ -36,7 +36,7 @@ class FilmCardFragment : Fragment() {
     }
 
     private fun bindToViewModel() {
-        viewModel.filmId = requireNotNull(requireArguments().getString(FILM_ID))
+        viewModel.filmId = requireNotNull(requireArguments().getInt(FILM_ID))
         viewModel.state.observe(viewLifecycleOwner) { state ->
             val description: Description? =
                 if (state is Loaded) state.description else null
@@ -45,6 +45,8 @@ class FilmCardFragment : Fragment() {
                     descriptionPoster.load(
                         description.posterUrl.toUri().buildUpon().scheme("https").build()
                     )
+                    //val bitmap = descriptionPoster.drawable.toBitmap()
+                    //descriptionPoster.setImageBitmap(bitmap)
                     descriptionStory.text = description.description
                     descriptionName.text = description.nameRu
                     var genres: String = ""
@@ -88,7 +90,7 @@ class FilmCardFragment : Fragment() {
     companion object {
         private const val FILM_ID = "id"
 
-        fun createArguments(filmId: String): Bundle {
+        fun createArguments(filmId: Int): Bundle {
             return bundleOf(FILM_ID to filmId)
         }
     }
