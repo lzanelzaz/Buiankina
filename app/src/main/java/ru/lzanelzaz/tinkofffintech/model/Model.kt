@@ -3,7 +3,7 @@ package ru.lzanelzaz.tinkofffintech.model
 data class Film(
     val filmId: Int,
     val nameRu: String,
-    val posterUrlPreview: String,
+    val posterUrl: String,
     val year: String,
     val genres: List<Genre>,
     var isFavourite: Boolean = false

@@ -45,7 +45,7 @@ class PopularsListAdapter :
             with(binding) {
                 itemName.text = item.nameRu
                 itemPoster.load(
-                    item.posterUrlPreview.toUri().buildUpon().scheme("https").build()
+                    item.posterUrl.toUri().buildUpon().scheme("https").build()
                 )
                 itemGenreYear.text = context.getString(
                     R.string.genreYear,
@@ -63,14 +63,14 @@ class PopularsListAdapter :
                 card.setOnLongClickListener {
                     val isFavourite = star.visibility == View.VISIBLE
                     if (isFavourite) {
-                        File(context.filesDir, "${item.filmId}.png").delete()
+                        File(context.filesDir, "${item.filmId}.jpeg").delete()
                         listener.onItemRemoveClick(item.filmId)
                         star.visibility = View.INVISIBLE
                     } else {
-                        val uri = "${item.filmId}.png"
+                        val uri = "${item.filmId}.jpeg"
                         val outputStream = File(context.filesDir, uri).outputStream()
-                        itemPoster.drawable.toBitmap(624, 937)
-                            .compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                        itemPoster.drawable.toBitmap(itemPoster.width, itemPoster.height)
+                            .compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                         outputStream.close()
                         listener.onItemClick(item.filmId, uri)
                         star.visibility = View.VISIBLE

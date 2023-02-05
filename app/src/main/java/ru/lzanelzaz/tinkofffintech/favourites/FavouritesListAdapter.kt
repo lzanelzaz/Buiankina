@@ -60,15 +60,15 @@ class FavouritesListAdapter :
 
                 card.setOnLongClickListener {
                     if (item.isFavourite) {
-                        File(context.filesDir, "${item.kinopoiskId}.png").delete()
+                        File(context.filesDir, "${item.kinopoiskId}.jpeg").delete()
                         listener.onItemRemoveClick(item.kinopoiskId)
                         star.visibility = View.INVISIBLE
                         item.isFavourite = false
                     } else {
-                        val uri = "${item.kinopoiskId}.png"
+                        val uri = "${item.kinopoiskId}.jpeg"
                         val outputStream = File(context.filesDir, uri).outputStream()
-                        itemPoster.drawable.toBitmap(624, 937)
-                            .compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                        itemPoster.drawable.toBitmap(itemPoster.width, itemPoster.height)
+                            .compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                         outputStream.close()
                         listener.onItemClick(item.kinopoiskId, uri)
                         star.visibility = View.VISIBLE

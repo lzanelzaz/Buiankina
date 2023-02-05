@@ -9,6 +9,9 @@ interface FilmInfoDao {
     @Query("SELECT * FROM FilmInfo ORDER BY id DESC")
     suspend fun getFavourites(): List<FilmInfo>
 
+    @Query("SELECT * FROM FilmInfo WHERE id = :kinopoiskId")
+    suspend fun checkId(kinopoiskId: Int): FilmInfo?
+
     @Insert
     suspend fun insertFavourite(filmInfo: FilmInfo)
 

@@ -1,5 +1,6 @@
 package ru.lzanelzaz.tinkofffintech.filmcard
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,10 +31,13 @@ class FilmCardViewModel @Inject constructor(private val appRepository: AppReposi
         viewModelScope.launch {
             _state.value = State.Loading
             try {
-                val description = appRepository.getDescription(filmId)
-                _state.value = State.Loaded(description)
+                val description = appRepository.checkId(filmId)
+                _state.value = if (description == null)
+                    State.Loaded(appRepository.getDescription(filmId))
+                else State.LoadedFromDb(description)
             } catch (exception: Exception) {
                 _state.value = State.Error
+                Log.i("fdggf", exception.toString())
             }
 
         }
@@ -42,6 +46,7 @@ class FilmCardViewModel @Inject constructor(private val appRepository: AppReposi
     sealed interface State {
         object Loading : State
         data class Loaded(val description: Description) : State
+        data class LoadedFromDb(val description: Description) : State
         object Error : State
     }
 }

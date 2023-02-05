@@ -17,6 +17,9 @@ class AppRepository @Inject constructor(
     suspend fun getFavourites(): List<Description> =
         filmInfoDao.getFavourites().map { it.description }
 
+    suspend fun checkId(kinopoiskId: Int): Description? =
+        filmInfoDao.checkId(kinopoiskId)?.description
+
     suspend fun insertFavourite(description: Description) =
         filmInfoDao.insertFavourite(FilmInfo(description.kinopoiskId, description))
 
