@@ -12,7 +12,7 @@ class AppRepository @Inject constructor(
     private val apiService: ApiService, private val filmInfoDao: FilmInfoDao
 ) {
     suspend fun getPopular() = apiService.getPopular()
-    suspend fun getDescription(id: Int) = apiService.getDescription(id)
+    suspend fun getDescription(id: Int): Description = apiService.getDescription(id)
 
     suspend fun getFavourites(): List<Description> =
         filmInfoDao.getFavourites().map { it.description }

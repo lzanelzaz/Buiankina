@@ -1,15 +1,17 @@
 package ru.lzanelzaz.tinkofffintech.favourites
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
+import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import java.io.File
 import ru.lzanelzaz.tinkofffintech.R
 import ru.lzanelzaz.tinkofffintech.RecyclerClickListener
 import ru.lzanelzaz.tinkofffintech.databinding.FilmItemBinding
@@ -40,10 +42,9 @@ class FavouritesListAdapter :
         fun bind(item: Description, listener: RecyclerClickListener) {
             with(binding) {
                 itemName.text = item.nameRu
-                itemPoster.load(
-                    item.posterUrl.toUri().buildUpon().scheme("https").build()
-                )
-                //itemPoster.setImageDrawable(item.posterDrawable)
+                val openFileInput = context.openFileInput(item.posterDrawable)
+                itemPoster.setImageBitmap(BitmapFactory.decodeStream(openFileInput))
+                openFileInput.close()
                 itemGenreYear.text = context.getString(
                     R.string.genreYear,
                     item.genres[0].genre.replaceFirstChar { it.uppercase() },
@@ -59,11 +60,17 @@ class FavouritesListAdapter :
 
                 card.setOnLongClickListener {
                     if (item.isFavourite) {
+                        File(context.filesDir, "${item.kinopoiskId}.png").delete()
                         listener.onItemRemoveClick(item.kinopoiskId)
                         star.visibility = View.INVISIBLE
                         item.isFavourite = false
                     } else {
-                        listener.onItemClick(item.kinopoiskId, itemPoster.drawable)
+                        val uri = "${item.kinopoiskId}.png"
+                        val outputStream = File(context.filesDir, uri).outputStream()
+                        itemPoster.drawable.toBitmap(624, 937)
+                            .compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                        outputStream.close()
+                        listener.onItemClick(item.kinopoiskId, uri)
                         star.visibility = View.VISIBLE
                         item.isFavourite = true
                     }

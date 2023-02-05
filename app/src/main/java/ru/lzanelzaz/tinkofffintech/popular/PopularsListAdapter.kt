@@ -1,20 +1,24 @@
 package ru.lzanelzaz.tinkofffintech.popular
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import java.io.File
 import ru.lzanelzaz.tinkofffintech.R
 import ru.lzanelzaz.tinkofffintech.RecyclerClickListener
 import ru.lzanelzaz.tinkofffintech.databinding.FilmItemBinding
 import ru.lzanelzaz.tinkofffintech.filmcard.FilmCardFragment
 import ru.lzanelzaz.tinkofffintech.model.Film
+
 
 class PopularsListAdapter :
     ListAdapter<Film, PopularsListAdapter.ItemViewHolder>(DiffCallback()) {
@@ -59,10 +63,16 @@ class PopularsListAdapter :
                 card.setOnLongClickListener {
                     val isFavourite = star.visibility == View.VISIBLE
                     if (isFavourite) {
+                        File(context.filesDir, "${item.filmId}.png").delete()
                         listener.onItemRemoveClick(item.filmId)
                         star.visibility = View.INVISIBLE
                     } else {
-                        listener.onItemClick(item.filmId, itemPoster.drawable)
+                        val uri = "${item.filmId}.png"
+                        val outputStream = File(context.filesDir, uri).outputStream()
+                        itemPoster.drawable.toBitmap(624, 937)
+                            .compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                        outputStream.close()
+                        listener.onItemClick(item.filmId, uri)
                         star.visibility = View.VISIBLE
                     }
                     true

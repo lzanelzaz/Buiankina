@@ -1,6 +1,5 @@
 package ru.lzanelzaz.tinkofffintech.popular
 
-import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -36,16 +35,15 @@ class PopularsViewModel @Inject constructor(private val appRepository: AppReposi
         }
     }
 
-    fun onItemClicked(filmId: Int, drawable: Drawable) {
+    fun onItemClicked(filmId: Int, uri: String) {
         viewModelScope.launch {
             try {
                 val description = appRepository.getDescription(filmId)
-                //description.posterDrawable = drawable
+                description.posterDrawable = uri
                 description.isFavourite = true
                 appRepository.insertFavourite(description)
             } catch (exception: Exception) {
                 _state.value = State.Error
-                Log.i("ldfhj", exception.toString())
             }
         }
     }
@@ -64,6 +62,7 @@ class PopularsViewModel @Inject constructor(private val appRepository: AppReposi
                 _state.value = State.Loaded(films)
             } catch (exception: Exception) {
                 _state.value = State.Error
+                Log.i("load", exception.toString())
             }
         }
     }

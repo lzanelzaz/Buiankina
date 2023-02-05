@@ -1,6 +1,5 @@
 package ru.lzanelzaz.tinkofffintech.favourites
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,8 +46,8 @@ class FavouritesFragment : Fragment() {
                 emptyList()
             adapter.submitList(dataset)
             adapter.setItemListener(object : RecyclerClickListener {
-                override fun onItemClick(filmId: Int, drawable: Drawable) {
-                    viewModel.onItemClicked(filmId, drawable)
+                override fun onItemClick(filmId: Int, uri: String) {
+                    viewModel.onItemClicked(filmId, uri)
                 }
 
                 override fun onItemRemoveClick(filmId: Int) {

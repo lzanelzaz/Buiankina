@@ -45,8 +45,6 @@ class FilmCardFragment : Fragment() {
                     descriptionPoster.load(
                         description.posterUrl.toUri().buildUpon().scheme("https").build()
                     )
-                    //val bitmap = descriptionPoster.drawable.toBitmap()
-                    //descriptionPoster.setImageBitmap(bitmap)
                     descriptionStory.text = description.description
                     descriptionName.text = description.nameRu
                     var genres: String = ""

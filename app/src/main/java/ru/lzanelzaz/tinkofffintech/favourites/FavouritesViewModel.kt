@@ -1,6 +1,5 @@
 package ru.lzanelzaz.tinkofffintech.favourites
 
-import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,11 +30,11 @@ class FavouritesViewModel @Inject constructor(private val appRepository: AppRepo
         }
     }
 
-    fun onItemClicked(filmId: Int, drawable: Drawable) {
+    fun onItemClicked(filmId: Int, uri: String) {
         viewModelScope.launch {
             try {
                 val description = appRepository.getDescription(filmId)
-                //description.posterDrawable = drawable
+                description.posterDrawable = uri
                 description.isFavourite = true
                 appRepository.insertFavourite(description)
             } catch (exception: Exception) {
