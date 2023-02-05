@@ -17,6 +17,9 @@ Android-приложение со списком фильмов и их опис
     фильм помещается в избранное и хранится в базе данных. Карточки фильмов из избранного доступны в оффлайн-режиме.
 2.  При просмотре популярных, выделяются фильмы, находящиеся в избранном.
 
+Также был адаптирован дизайн под темную тему.
+
+
 ![Network error](screenshots/networkError.png)
 
 ![Populars](screenshots/populars.png)
@@ -24,3 +27,5 @@ Android-приложение со списком фильмов и их опис
 ![Favourites](screenshots/favourites.png)
 
 ![Description](screenshots/description.png)
+
+![Dark theme](screenshots/darkTheme.png)
