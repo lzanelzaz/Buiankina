@@ -2,16 +2,18 @@ package ru.lzanelzaz.tinkofffintech.popular
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
 import coil.load
+import coil.request.ImageRequest
 import java.io.File
 import ru.lzanelzaz.tinkofffintech.R
 import ru.lzanelzaz.tinkofffintech.RecyclerClickListener
@@ -68,10 +70,17 @@ class PopularsListAdapter :
                         star.visibility = View.INVISIBLE
                     } else {
                         val uri = "${item.filmId}.jpeg"
-                        val outputStream = File(context.filesDir, uri).outputStream()
-                        itemPoster.drawable.toBitmap(itemPoster.width, itemPoster.height)
-                            .compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                        outputStream.close()
+                        val req = ImageRequest.Builder(context)
+                            .data(
+                                item.posterUrl.toUri().buildUpon().scheme("https").build()
+                            )
+                            .target { result ->
+                                val outputStream = File(context.filesDir, uri).outputStream()
+                                (result as BitmapDrawable).bitmap
+                                    .compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                                outputStream.close()
+                            }.build()
+                        ImageLoader(context).enqueue(req)
                         listener.onItemClick(item.filmId, uri)
                         star.visibility = View.VISIBLE
                     }

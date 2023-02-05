@@ -1,6 +1,5 @@
 package ru.lzanelzaz.tinkofffintech.filmcard
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import ru.lzanelzaz.tinkofffintech.databinding.FragmentFilmCardBinding
 import ru.lzanelzaz.tinkofffintech.model.Description
 
@@ -52,10 +52,12 @@ class FilmCardFragment : Fragment() {
                             description.posterUrl.toUri().buildUpon().scheme("https").build()
                         )
                     } else {
-                        val openFileInput =
-                            requireContext().openFileInput(description.posterDrawable)
-                        descriptionPoster.setImageBitmap(BitmapFactory.decodeStream(openFileInput))
-                        openFileInput.close()
+                        descriptionPoster.setImageURI(
+                            File(
+                                requireContext().filesDir,
+                                description.posterDrawable
+                            ).toUri()
+                        )
                     }
                     descriptionStory.text = description.description
                     descriptionName.text = description.nameRu
